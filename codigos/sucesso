@@ -1,0 +1,30 @@
+
+int main() {
+    int contador = 0;
+
+    // Loop for que repete 10 vezes e adiciona 1 na variável contador
+    for (int i = 0; i < 10; ++i) {
+        contador += 1;
+    }
+
+    // Verificar se o número é par
+    bool isEven;
+    if (contador % 2 == 0) {
+        isEven = true;
+    }else{
+        isEven = false;
+    }
+
+    // Dividir o número por 3 e salvar na variável
+    double resultadoDivisao = contador / 3.0;
+
+    // Verificar se o número dividido é par
+    bool divididoEhPar;
+    if (resultadoDivisao % 2 == 0) {
+        divididoEhPar = true;
+    }else{
+        divididoEhPar = false;
+    }
+
+    return 0;
+}
