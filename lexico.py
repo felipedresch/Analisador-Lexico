@@ -9,6 +9,7 @@ class Lexico:
     """
 
     def __init__(self, codigo_fonte):
+
         self.__pos_fita = 0
         self.__fita = []
         self.__num_linha = 1
@@ -34,56 +35,212 @@ class Lexico:
         self.__num_linha += 1
 
     def __get_caracter(self):
+        """
+            Busca o próximo símbolo da fita e o adiciona ao lexema caso este símbolo não seja um espaço ou
+            uma quebra de linha.
+            :return: O próximo símbolo da fita
+        """
         if self.__pos_fita < len(self.__fita):
             self.__letra = self.__fita[self.__pos_fita]
             self.__avancar_fita()
+            if self.__letra is None:
+                self.__letra = ' '
+            # esse or aqui ta desafiando as leis da lógica
             if self.__letra != self.__fim_linha or not self.__letra.isspace():
                 self.__lexema += self.__letra
             return self.__letra
-        else:
-            return '\n'
 
     def __get_tbl_tokens(self):
-        # Define a tabela de tokens
+        """
+        O loop do código acontece aqui, pegando linha por linha e mandando para o estado q0 sempre em cada linha.
+        Ao final, tem-se a tabela de símbolos.
+        :return: A tabela de tokens/símbolos montada durante a execução do programa
+        """
+
         for linha in self.__codigo:
-            print(linha)
             self.__fita = list(linha)
-            print(self.__fita)
+            # Aqui o programa 'começa'. Do q0 ele vai para vários outros estados até encontrar o fim da linha e
+            # voltar para este lugar e repetir o processo para as demais linhas
             self.__q0()
+
             self.__update_num_linha()
             self.__pos_fita = 0
         self.__codigo.close()
         return self.__tbl_simbolos
 
-    def __print_tokens(self):
+    def print_tokens(self):
         header = ['Token', 'Lexema', 'Linha', 'Coluna']
         print(tabulate(self.__get_tbl_tokens(), headers=header, tablefmt='fancy_grid'))
+
+    def __leu_espaco_reconhecedor(self, token: str):
+        """
+            Quando um estado reconhecedor lê um espaço. Significa que ainda há mais símbolos para ler na
+            linha atual.
+            :param token: str -> O token reconhecido.
+        """
+
+        # Remove o último símbolo atribuído ao lexema (no caso, o espaço)
+        #self.__lexema = self.__lexema[:len(self.__lexema) - 1]
+        self.__tbl_simbolos.append([token, self.__lexema, self.__num_linha, self.__pos_fita - len(self.__lexema)])
+        self.__lexema = ''
+
+    def __leu_espaco(self):
+        """
+            Quando um estado intermediário lê um espaço.
+            Significa que ainda há mais símbolos para ler na linha atual.
+        """
+
+        # TODO: Repensar a necessidade disso aqui, já que ele não reconhece o espaço como ' ' então nao tem
+        # necessidade de remover esse vazio. Mas ele ta funcioanando msm assim nsei pq??
+
+        # self.__lexema = self.__lexema[:len(self.__lexema) - 1]  # Remove o último símbolo atribuído ao lexema
+        # self.__pos_fita -= 1  # Não sei se isso precisa, pode estar errado
+        pass
+
+    def __leu_fim_linha(self, token: str):
+        """
+            Usado em estados reconhecedores. Encontra um \n após o reconhecimento de um símbolo.
+            :param token: str -> o token encontrado.
+        """
+        self.__tbl_simbolos.append([token, self.__lexema, self.__num_linha, self.__pos_fita - len(self.__lexema)])
+        # self.__pos_fita += 1  # verificar se isso faz sentido mais adiante
+        self.__lexema = ''
+
+    def __leu_especial(self, token: str):
+        """
+            Usado em estados reconhecedores. Deve-se retornar a posição da fita de leitura e descartar o
+            símbolo especial lido.
+            :param token: str -> O token reconhecido.
+        """
+        self.__lexema = self.__lexema[:len(self.__lexema) - 1]
+        self.__tbl_simbolos.append([token, self.__lexema, self.__num_linha, self.__pos_fita - len(self.__lexema)])
+        self.__lexema = ''
+        self.__pos_fita -= 1
+
+    # IMPORTANTE!! Os espaços são lidos como uma string vazia assim -> '' e os fins de linha são lidos como None!
 
     def __q0(self):
         self.__caracter = self.__get_caracter()
 
-        match self.__caracter:
-            case 'i':
-                print("Ir para o proximo estado")
-                # self.__q1()
-            case 'f':
-                print("Ir para o proximo estado")
-                # self.__q2()
-            #  case ...
-            case self.__caracter.isdigit():
-                print()
-                # self.__qx()
-            case self.__caracter.isspace():
-                self.__letra = ''
-                self.__q0()
-            case self.__fim_linha:
-                pass
-            case _:
-                raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
-                                 f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == '':
+            self.__lexema = ''
+            self.__q0()
+        elif self.__caracter == 'i':
+            self.__q1()
+        elif self.__caracter == 'f':
+            # seguir para o lexema 'for'
+            print('self.__q13()')
+        elif self.__caracter.isdigit():
+            print("fazer alguma coisa")
+            # self.__q15()
+        elif self.__caracter.islower():
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
 
+    def __q1(self):
+        """
+            Estados intermediários (que não reconecem nenhum símbolo) só precisam ter a lógica de reconhecer
+            o seu símbolo, dígitos e espaços. Fim de linha e especiais não precisa.
+        :return:
+        """
+        self.__caracter = self.__get_caracter()
 
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == 'f':
+            self.__q2()
+        elif self.__caracter == 'n':
+            self.__q31()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
 
+    def __q2(self):
+        """
+        Reconhece o lexema 'if' e define o que fazer caso o próximo item a ser lido for um espaço,
+        uma quebra de linha ou um caracter especial.
+        """
+        self.__caracter = self.__get_caracter()
 
+        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
+            self.__leu_espaco_reconhecedor("palavra reservada")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("palavra reservada")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("palavra reservada")
+            self.__q0()
+        elif self.__caracter == "o":
+            print("seguir pro for")
+            # self.__qx()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
 
+    def __q11(self):
+        """
+        Será o estado de destino sempre que o analisador encontrar, no meio de uma palavra que até
+        aquele momento tem potencial para ser aceita, um número ou uma letra que não foi explicitamente
+        definida no autômato.
+        É também o destino, a partir de q0, caso seja lido uma letra minuscula.
+        Este é um estado reconhecedor de variáveis/identificadores.
+        """
+        self.__caracter = self.__get_caracter()
 
+        # Lê toda a variável
+        while self.__caracter.islower() or self.__caracter.isdigit():
+            self.__caracter = self.__get_caracter()
+
+        if self.__caracter.isspace() or self.__caracter == '':
+            self.__leu_espaco_reconhecedor("identificador")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("identificador")
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q31(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter == 't':  # Reconhece o lexema 'int'
+            self.__q32()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q32(self):
+        """
+        Reconhece o token 'int' e define o que fazer depois disso.
+        A lógica dos estados reconhecedores é sempre a mesma, muda apenas os estados de destino.
+        """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            self.__leu_fim_linha("palavra reservada")
+        elif self.__caracter == '':
+            self.__leu_espaco_reconhecedor("palavra reservada")
+            self.__q0()
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("palavra reservada")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")

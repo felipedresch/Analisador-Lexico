@@ -7,11 +7,19 @@ from lexico import Lexico
 
 def main():
     escolha = input("Escolha o código a ser lido:\n"
-                    "1 - Fibonnaci\n"
-                    "2 - Multiplicacao\n"
+                    "1 - Código de sucesso\n"
+                    "2 - Código com erro\n"
+                    "3 - if e int\n"
                     "-> ")
     match escolha:
-        case '1': Lexico("codigos/fibonnaci.txt")
-        case '2': Lexico("codigos/multiplicacao.txt")
+        case '1':
+            Lexico("codigos/sucesso")
+        case '2':
+            Lexico("codigos/erro")
+        case '3':
+            analisador = Lexico("codigos/if")
+            analisador.print_tokens()
 
 
+if __name__ == '__main__':
+    main()
