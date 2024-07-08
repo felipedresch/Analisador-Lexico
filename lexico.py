@@ -127,19 +127,45 @@ class Lexico:
         elif self.__caracter == '':
             self.__lexema = ''
             self.__q0()
-        elif self.__caracter in self.__especiais:
-            self.__leu_especial("palavra reservada")
-            self.__q0()
+        #elif self.__caracter in self.__especiais:
+            #self.__leu_especial("palavra reservada")
+            #self.__q0()
         elif self.__caracter == 'i':
             self.__q1()
+        elif self.__caracter == '+':
+            self.__q6()
+        elif self.__caracter == '*':
+            self.__q8()
+        elif self.__caracter == '/':
+            self.__q10()
         elif self.__caracter == 'f':
             self.__q13()
         elif self.__caracter == 'e':
             self.__q14()
+        elif self.__caracter == ';':
+            self.__q16()
+        elif self.__caracter == '-':
+            self.__q18()
+        elif self.__caracter == '%':
+            self.__q20()
+        elif self.__caracter == '=':
+            self.__q21()
+        elif self.__caracter == '<':
+            self.__q24()
+        elif self.__caracter == '>':
+            self.__q25()
+        elif self.__caracter == '(':
+            self.__q29()
+        elif self.__caracter == ')':
+            self.__q30()
+        elif self.__caracter == '{':
+            self.__q17()
         elif self.__caracter == 'b':
             self.__q33()
         elif self.__caracter == 'd':
             self.__q37()
+        elif self.__caracter == 'm':
+            self.__q43()
         elif self.__caracter.isdigit():
             print("fazer alguma coisa")  # não entendi
             # self.__q15()
@@ -240,7 +266,6 @@ class Lexico:
         else:
             raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
                              f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
-
     def __q5(self):
         """
             Estados intermediários (que não reconecem nenhum símbolo) só precisam ter a lógica de reconhecer
@@ -253,6 +278,36 @@ class Lexico:
             pass
         elif self.__caracter == 's':
             self.__q3()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q6(self):
+        """
+        :return:
+        """
+        self.__caracter = self.__get_caracter()
+        if self.__caracter == '+':
+            self.__q9()
+        if self.__caracter == '=':
+            self.__q26()
+        elif self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
+            self.__leu_espaco_reconhecedor("operador matemático")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("operador matemático")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("operador matemático")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
         elif self.__caracter.isdigit() or self.__caracter.islower():
             self.__q11()
         elif self.__caracter == '':
@@ -284,6 +339,65 @@ class Lexico:
             raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
                              f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
 
+    def __q8(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
+            self.__leu_espaco_reconhecedor("operador matemático")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("operador matemático")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("operador matemático")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q9(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':
+            self.__leu_espaco_reconhecedor("operador matemático")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("operador matemático")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("operador matemático")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q10(self):
+        self.__caracter = self.__get_caracter()
+        if self.__caracter == '/':
+            self.__q23()
+        elif self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
+            self.__leu_espaco_reconhecedor("operador matemático")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("operador matemático")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("operador matemático")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
     def __q11(self):
         """
         Será o estado de destino sempre que o analisador encontrar, no meio de uma palavra que até
@@ -302,6 +416,9 @@ class Lexico:
             self.__q0()
         elif self.__caracter == self.__fim_linha:
             self.__leu_fim_linha("identificador")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("caractere especial")
+            self.__q0()
         else:
             raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
                              f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
@@ -356,6 +473,250 @@ class Lexico:
         else:
             raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
                              f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q16(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            self.__leu_fim_linha("caractere especial")
+        elif self.__caracter == '' or self.__caracter.isspace():
+            self.__leu_espaco_reconhecedor("caractere especial")
+            self.__q0()
+        elif self.__caracter in self.__especiais:
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q17(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            self.__leu_fim_linha("caractere especial")
+        elif self.__caracter == '' or self.__caracter.isspace():
+            self.__leu_espaco_reconhecedor("caractere especial")
+            self.__q0()
+        elif self.__caracter in self.__especiais:
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q18(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
+            self.__leu_espaco_reconhecedor("operador matemático")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("operador matemático")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("operador matemático")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q19(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            self.__leu_fim_linha("caractere especial")
+        elif self.__caracter == '' or self.__caracter.isspace():
+            self.__leu_espaco_reconhecedor("caractere especial")
+            self.__q0()
+        elif self.__caracter in self.__especiais:
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q20(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
+            self.__leu_espaco_reconhecedor("operador matemático")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("operador matemático")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("operador matemático")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q21(self):
+        self.__caracter = self.__get_caracter()
+        if self.__caracter == '=':
+            self.__q26()
+        elif self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
+            self.__leu_espaco_reconhecedor("operador matemático")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("operador matemático")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("operador matemático")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q22(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':
+            self.__leu_espaco_reconhecedor("operador matemático")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("operador matemático")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("operador matemático")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+
+    def __q24(self):
+        self.__caracter = self.__get_caracter()
+        if self.__caracter == '=':
+            self.__q27()
+        elif self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
+            self.__leu_espaco_reconhecedor("operador de comparação")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("operador de comparação")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("operador de comparação")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q25(self):
+        self.__caracter = self.__get_caracter()
+        if self.__caracter == '=':
+            self.__q27()
+        elif self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
+            self.__leu_espaco_reconhecedor("operador de comparação")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("operador de comparação")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("operador de comparação")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q26(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':
+            self.__leu_espaco_reconhecedor("operador matemático")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("operador matemático")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("operador matemático")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q27(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':
+            self.__leu_espaco_reconhecedor("operador de comparação")
+            self.__q0()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("operador de comparação")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("operador de comparação")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q29(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            self.__leu_fim_linha("caractere especial")
+        elif self.__caracter == '' or self.__caracter.isspace():
+            self.__leu_espaco_reconhecedor("caractere especial")
+            self.__q0()
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("caractere especial")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q30(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            self.__leu_fim_linha("caractere especial")
+        elif self.__caracter == '' or self.__caracter.isspace():
+            self.__leu_espaco_reconhecedor("caractere especial")
+            self.__q0()
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("caractere especial")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
 
     def __q31(self):
         self.__caracter = self.__get_caracter()
@@ -612,3 +973,134 @@ class Lexico:
         else:
             raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
                              f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q43(self):
+        """
+        :return:
+        """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == 'a':
+            self.__q44()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q44(self):
+        """
+        :return:
+        """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == 'i':
+            self.__q45()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q45(self):
+        """
+        :return:
+        """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == 'n':
+            self.__q46()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q46(self):
+        """
+        :return:
+        """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == '(':
+            self.__q47()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q47(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter == ')':  # Reconhece o lexema 'main()'
+            self.__q48()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q48(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            self.__leu_fim_linha("palavra reservada")
+        elif self.__caracter == '' or self.__caracter.isspace():
+            self.__leu_espaco_reconhecedor("palavra reservada")
+            self.__q0()
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("palavra reservada")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q46(self):
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            self.__leu_fim_linha("palavra reservada")
+        elif self.__caracter == '' or self.__caracter.isspace():
+            self.__leu_espaco_reconhecedor("palavra reservada")
+            self.__q0()
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("palavra reservada")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+
+
+
