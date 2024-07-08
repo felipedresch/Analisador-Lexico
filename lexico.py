@@ -124,12 +124,9 @@ class Lexico:
 
         if self.__caracter is None:
             pass
-        elif self.__caracter == '':
+        elif self.__caracter == '' or self.__caracter.isspace():
             self.__lexema = ''
             self.__q0()
-        #elif self.__caracter in self.__especiais:
-            #self.__leu_especial("palavra reservada")
-            #self.__q0()
         elif self.__caracter == 'i':
             self.__q1()
         elif self.__caracter == '+':
@@ -375,9 +372,8 @@ class Lexico:
 
     def __q10(self):
         self.__caracter = self.__get_caracter()
-        if self.__caracter == '/':
-            self.__q23()
-        elif self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
+
+        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
             self.__leu_espaco_reconhecedor("operador matemático")
             self.__q0()
         elif self.__caracter == self.__fim_linha:
