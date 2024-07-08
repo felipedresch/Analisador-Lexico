@@ -1,7 +1,6 @@
 # Analisador Léxico - Linguagem C++
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
 
 Um analisador léxico simples em Python que reconhece comandos básicos da linguagem C++. Este projeto foi desenvolvido como parte de um estudo sobre análise léxica e serve como 
 uma introdução ao processamento de linguagens formais.
