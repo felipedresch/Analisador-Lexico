@@ -28,7 +28,7 @@ Descreve os tokens e padrões de formatação
 | Operador de Atribuição | ‘=’ |
 | Operador de Comparação | ‘==’ |
 | Palavra reservada | 'main()' + 'int' + 'bool' + 'for' + 'if' + 'else' + 'double' + 'string' + 'return' |
-| Caractere Especial | '+' + '-' + '*' + '/' + '(', ')' + '<' + '>' + '=' + ':' + ';' + '{' + '}' |
+| Caractere Especial | '(' + ')' + '<' + '>' + ':' + ';' + '{' + '}' |
 | Operador lógico | 'true' + 'false' |
 
 <!--| Palavra Reservada | letra(letra⁺) + letra(letra⁺) ‘(’ ‘)’ | -->
