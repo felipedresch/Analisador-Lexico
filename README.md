@@ -13,4 +13,25 @@ uma introdução ao processamento de linguagens formais.
 
 ## Requisitos
 
-- Python 3.12.3 ou superior.
+- Python 3.12.4 ou superior.
+
+## Especificação Léxica da Linguagem
+Descreve os tokens e padrões de formatação
+
+| Token | Padrão de Formatação |
+|-----|--------------------|
+| Identificador | letra(letra+dígito)* |
+| Número real | dígito⁺.dígito∗ |
+| Número inteiro | dígito⁺ |
+| String | “(letra + dígito + simbolo)∗” |
+| Operador matemático| ‘+’ + ‘-’ + ‘*’ + ‘/’ + ‘+=’ + ‘-=’|
+| Operador de Atribuição | ‘=’ |
+| Operador de Comparação | ‘==’ |
+| Palavra reservada | 'main()' + 'int' + 'bool' + 'for' + 'if' + 'else' + 'double' + 'string' + 'return' |
+| Caractere Especial | '+' + '-' + '*' + '/' + '(', ')' + '<' + '>' + '=' + ':' + ';' + '{' + '}' |
+| Operador lógico | 'true' + 'false' |
+
+<!--| Palavra Reservada | letra(letra⁺) + letra(letra⁺) ‘(’ ‘)’ | -->
+
+
+
