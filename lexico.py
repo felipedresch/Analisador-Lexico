@@ -1082,23 +1082,6 @@ class Lexico:
             raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
                              f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
 
-    def __q46(self):
-        self.__caracter = self.__get_caracter()
-
-        if self.__caracter is None:
-            self.__leu_fim_linha("palavra reservada")
-        elif self.__caracter == '' or self.__caracter.isspace():
-            self.__leu_espaco_reconhecedor("palavra reservada")
-            self.__q0()
-        elif self.__caracter in self.__especiais:
-            self.__leu_especial("palavra reservada")
-            self.__q0()
-        elif self.__caracter.isdigit() or self.__caracter.islower():
-            self.__q11()
-        else:
-            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
-                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
-
     def __q50(self):
         """
         Reconhece o lexema 'if' e define o que fazer caso o próximo item a ser lido for um espaço,
