@@ -177,58 +177,6 @@ class Lexico:
             raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
                              f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
 
-    def __q50(self):
-        """
-        Reconhece o lexema 'if' e define o que fazer caso o próximo item a ser lido for um espaço,
-        uma quebra de linha ou um caracter especial.
-        """
-        self.__caracter = self.__get_caracter()
-
-        while self.__caracter is not None and (self.__caracter in '0123456789'):
-            self.__caracter = self.__get_caracter()
-
-        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
-            self.__leu_espaco_reconhecedor("numero")
-            self.__q0()
-        elif self.__caracter == '.':
-            self.__q51()
-        elif self.__caracter == self.__fim_linha:
-            self.__leu_fim_linha("numero")
-        elif self.__caracter in self.__especiais:
-            self.__leu_especial("numero")
-            self.__q0()
-        elif self.__caracter.isdigit() or self.__caracter.islower():
-            self.__q11()
-        else:
-            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
-                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
-
-    def __q51(self):
-        """
-        Reconhece o lexema 'if' e define o que fazer caso o próximo item a ser lido for um espaço,
-        uma quebra de linha ou um caracter especial.
-        """
-        self.__caracter = self.__get_caracter()
-
-        while self.__caracter is not None and (self.__caracter in '0123456789'):
-            self.__caracter = self.__get_caracter()
-
-        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
-            self.__leu_espaco_reconhecedor("numero com ponto")
-            self.__q0()
-        elif self.__caracter == ',' or '.':
-            self.__q51()
-        elif self.__caracter == self.__fim_linha:
-            self.__leu_fim_linha("palavra reservada")
-        elif self.__caracter in self.__especiais:
-            self.__leu_especial("palavra reservada")
-            self.__q0()
-        elif self.__caracter.isdigit() or self.__caracter.islower():
-            self.__q11()
-        else:
-            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
-                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
-
     def __q1(self):
         """
             Estados intermediários (que não reconecem nenhum símbolo) só precisam ter a lógica de reconhecer
@@ -1142,6 +1090,58 @@ class Lexico:
         elif self.__caracter == '' or self.__caracter.isspace():
             self.__leu_espaco_reconhecedor("palavra reservada")
             self.__q0()
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("palavra reservada")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q50(self):
+        """
+        Reconhece o lexema 'if' e define o que fazer caso o próximo item a ser lido for um espaço,
+        uma quebra de linha ou um caracter especial.
+        """
+        self.__caracter = self.__get_caracter()
+
+        while self.__caracter is not None and (self.__caracter in '0123456789'):
+            self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
+            self.__leu_espaco_reconhecedor("numero")
+            self.__q0()
+        elif self.__caracter == '.':
+            self.__q51()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("numero")
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("numero")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q51(self):
+        """
+        Reconhece o lexema 'if' e define o que fazer caso o próximo item a ser lido for um espaço,
+        uma quebra de linha ou um caracter especial.
+        """
+        self.__caracter = self.__get_caracter()
+
+        while self.__caracter is not None and (self.__caracter in '0123456789'):
+            self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':  # verificar
+            self.__leu_espaco_reconhecedor("numero com ponto")
+            self.__q0()
+        elif self.__caracter == ',' or '.':
+            self.__q51()
+        elif self.__caracter == self.__fim_linha:
+            self.__leu_fim_linha("palavra reservada")
         elif self.__caracter in self.__especiais:
             self.__leu_especial("palavra reservada")
             self.__q0()
