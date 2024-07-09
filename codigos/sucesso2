@@ -1,0 +1,26 @@
+
+int main() {
+    int soma = 0;
+
+    for (int i = 1; i <= 10; ++i) {
+        soma += i;
+    }
+
+    bool issomaeven;
+    if (soma % 2 == 0) {
+        issomaeven = true;
+    } else {
+        issomaeven = false;
+    }
+
+    double media = soma / 10.0;
+
+    bool mediaehpar;
+    if (media % 2 == 0) {
+        mediaehpar = true;
+    } else {
+        mediaehpar = false;
+    }
+
+    return 0;
+}

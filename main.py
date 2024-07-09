@@ -8,22 +8,20 @@ from lexico import Lexico
 def main():
     escolha = input("Escolha o código a ser lido:\n"
                     "1 - Código de sucesso\n"
-                    "2 - Código com erro\n"
-                    "3 - if e int e for e bool\n"
-                    "4 - operadores\n"
+                    "2 - Código de sucesso dois\n"
+                    "3 - Código de falha\n"
                     "-> ")
     match escolha:
         case '1':
             analisador = Lexico("codigos/sucesso")
             analisador.print_tokens()
         case '2':
-            Lexico("codigos/erro")
+            analisador = Lexico("codigos/sucesso2")
+            analisador.print_tokens()
         case '3':
-            analisador = Lexico("codigos/if")
-            analisador.print_tokens()
-        case '4':
-            analisador = Lexico("codigos/operadores")
-            analisador.print_tokens()
+            Lexico("codigos/erro")
+
+
 
 
 if __name__ == '__main__':
