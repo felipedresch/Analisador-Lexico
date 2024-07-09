@@ -166,6 +166,10 @@ class Lexico:
             self.__q43()
         elif self.__caracter in '0123456789':
             self.__q50()
+        elif self.__caracter == 'r':
+            self.__q52()
+        elif self.__caracter == 't':
+            self.__q62()
         elif self.__caracter.isdigit():
             print("fazer alguma coisa")  # não entendi
             # self.__q15()
@@ -445,6 +449,8 @@ class Lexico:
             pass
         elif self.__caracter == 'o':
             self.__q12()
+        elif self.__caracter == 'a':
+            self.__q58()
         elif self.__caracter != 'o':
             self.__q11()
         else:
@@ -586,12 +592,12 @@ class Lexico:
         self.__caracter = self.__get_caracter()
 
         if self.__caracter is None or self.__caracter.isspace() or self.__caracter == '':
-            self.__leu_espaco_reconhecedor("operador de atribuição")
+            self.__leu_espaco_reconhecedor("operador de comparação")
             self.__q0()
         elif self.__caracter == self.__fim_linha:
-            self.__leu_fim_linha("operador de atribuição")
+            self.__leu_fim_linha("operador de comparação")
         elif self.__caracter in self.__especiais:
-            self.__leu_especial("operador de atribuição")
+            self.__leu_especial("operador de comparação")
             self.__q0()
         elif self.__caracter.isdigit() or self.__caracter.islower():
             self.__q11()
@@ -1133,3 +1139,254 @@ class Lexico:
         else:
             raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
                              f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q52(self):
+        """
+           Verifica se o caractere é um 'e', para formar a palavra reservada 'return', se não for
+           apenas toma outro caminho
+         """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == 'e':
+            self.__q53()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q53(self):
+        """
+           Verifica se o caractere é um 't', para formar a palavra reservada 'return', se não for
+           apenas toma outro caminho
+         """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == 't':
+            self.__q54()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q54(self):
+        """
+           Verifica se o caractere é um 'u', para formar a palavra reservada 'return', se não for
+           apenas toma outro caminho
+         """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == 'u':
+            self.__q55()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q55(self):
+        """
+           Verifica se o caractere é um 'r', para formar a palavra reservada 'return', se não for
+           apenas toma outro caminho
+         """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == 'r':
+            self.__q56()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q56(self):
+        """
+           Verifica se o caractere é um 'n', para formar a palavra reservada 'return', se não for
+           apenas toma outro caminho
+         """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter == 'n':  # Reconhece o lexema 'return'
+            self.__q57()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q57(self):
+        """
+            Identifica a palavra reservada 'return'
+         """
+
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            self.__leu_fim_linha("palavra reservada")
+        elif self.__caracter == '' or self.__caracter.isspace():
+            self.__leu_espaco_reconhecedor("palavra reservada")
+            self.__q0()
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("palavra reservada")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q58(self):
+        """
+           Verifica se o caractere é um 'l', para formar a palavra reservada 'false', se não for
+           apenas toma outro caminho
+         """
+
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == 'l':
+            self.__q59()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q59(self):
+        """
+           Verifica se o caractere é um 's', para formar a palavra reservada 'false', se não for
+           apenas toma outro caminho
+         :return:
+         """
+
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == 's':
+            self.__q60()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+    def __q60(self):
+        """
+          Verifica se o caractere é um 'e', para formar a palavra reservada 'false' ou 'true', se não for
+          apenas toma outro caminho
+        :return:
+        """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter == 'e':  # Reconhece o lexema 'false'
+            self.__q61()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+    def __q61(self):
+        """
+          Identifica a palavra reservada 'false'
+        :return:
+        """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            self.__leu_fim_linha("palavra reservada")
+        elif self.__caracter == '' or self.__caracter.isspace():
+            self.__leu_espaco_reconhecedor("palavra reservada")
+            self.__q0()
+        elif self.__caracter in self.__especiais:
+            self.__leu_especial("palavra reservada")
+            self.__q0()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q62(self):
+        """
+          Verifica se o caractere é um 'r', para formar a palavra reservada 'true', se não for
+          apenas toma outro caminho
+        :return:
+        """
+
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == 'r':
+            self.__q63()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+    def __q63(self):
+        """
+          Verifica se o caractere é um 'u', para formar a palavra reservada 'true', se não for
+          apenas toma outro caminho
+        :return:
+        """
+        self.__caracter = self.__get_caracter()
+
+        if self.__caracter is None:
+            pass
+        elif self.__caracter == 'u':
+            self.__q60()
+        elif self.__caracter.isdigit() or self.__caracter.islower():
+            self.__q11()
+        elif self.__caracter == '':
+            self.__leu_espaco()
+            self.__q11()
+        elif self.__fim_linha:
+            pass
+        else:
+            raise ValueError(f"Erro léxico encontrado na linha {self.__num_linha} "
+                             f"e coluna {self.__pos_fita} para o caracter {self.__caracter}")
+
+
