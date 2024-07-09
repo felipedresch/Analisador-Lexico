@@ -19,9 +19,8 @@ def main():
             analisador = Lexico("codigos/sucesso2")
             analisador.print_tokens()
         case '3':
-            Lexico("codigos/erro")
-
-
+            analisador = Lexico("codigos/erro")
+            analisador.print_tokens()
 
 
 if __name__ == '__main__':
